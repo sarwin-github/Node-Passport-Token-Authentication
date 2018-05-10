@@ -12,5 +12,4 @@ module.exports.initializeRoutes = app => {
 	/* Home routes */
 	app.use('/', UserRoutes);
 	app.use('/', HomeRoutes);
-	
 };

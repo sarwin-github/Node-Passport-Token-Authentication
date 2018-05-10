@@ -1,42 +1,49 @@
+const User          = require('../model/user');
 const passport      = require('passport');
 const passportJWT   = require("passport-jwt");
 
+//jwt authentication
 const ExtractJWT    = passportJWT.ExtractJwt;
-const LocalStrategy = require('passport-local').Strategy;
 const JWTStrategy   = passportJWT.Strategy;
 
-const User          = require('../model/user');
+//local
+const LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy({
         usernameField: 'email',
         passwordField: 'password'
-    }, (email, password, cb) => {
-        //this one is typically a DB call. Assume that the returned user object is pre-formatted and ready for storing in JWT
-        return User.findOne({email, password})
-           .then(user => {
-               if (!user) {
-                   return cb(null, false, {message: 'Incorrect email or password.'});
-               }
-               return cb(null, user, {message: 'Logged In Successfully'});
-          })
-          .catch(err => cb(err));
+    }, (email, password, callback) => {
+
+        return User.findOne({ 'email': email.toLowerCase() }, (err, user) => {
+            if (err) {
+                return callback(err);
+            }
+            if (!user) {
+                return callback(null, false, { message: 'User does not exist in the database.'});
+            }
+            if (!user.validPassword(password)) {
+                return callback(null, false, { message: 'Invalid password.'});
+            }
+            return callback(null, user);
+        });
     }
 ));
 
+var opts = {}
+opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
+opts.secretOrKey    = 'jwt_secret_token';
 
-passport.use(new JWTStrategy({
-        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-        secretOrKey   : 'jwt_secret_token'
-    },
-    function (jwtPayload, cb) {
-
-        //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
-        return User.findOneById(jwtPayload.id)
-            .then(user => {
-                return cb(null, user);
-            })
-            .catch(err => {
-                return cb(err);
-            });
-    }
-));
+passport.use(new JWTStrategy(opts, (jwt_payload, callback) => {
+    User.findOneById({id: jwt_payload._id}, (err, user) => {
+      console.log(user, err)
+        if (err) {
+            return callback(err, false);
+        }
+        if (user) {
+            return callback(null, user);
+        } else {
+            return callback(null, false);
+            // or you could create a new account
+        }
+    });
+}));

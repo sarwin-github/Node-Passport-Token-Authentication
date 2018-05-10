@@ -2,6 +2,7 @@ const express  = require('express');
 const router   = express.Router();
 const jwt      = require('jsonwebtoken');
 const passport = require("passport");
+const User  = require("../model/user");
 
 module.exports.getLogin = (req, res) => {
   res.render('user/login.ejs', { 
@@ -10,25 +11,42 @@ module.exports.getLogin = (req, res) => {
   });
 }
 
+module.exports.signUp = (req, res) => {
+  let user = new User();
+
+  user.email    = req.body.email;
+  user.password = user.generateHash(req.body.password);
+
+  user.save(err => {
+    if(err){
+      return res.json({err:err, message: 'Something went wrong.'});
+    }
+
+    res.json({message:"successfully added new user"});
+  })
+};
+
 module.exports.postLogin = (req, res, next) => {
-  passport.authenticate('local', {session: false}, (err, user, info) => {      
-      if (err || !user) {
-          return res.status(400).json({
-              message: info ? info.message : 'Login failed',
-              user   : user
-          });
-      }
+  passport.authenticate('local', {session: false}, (err, user, info) => {
+        console.log(err);
+        if (err || !user) {
+            return res.status(400).json({
+                message: info ? info.message : 'Login failed',
+                user   : user
+            });
+        }
 
-      req.login(user, {session: false}, (err) => {
-         if (err) {
-             res.json(err);
-         }
-         // generate a signed son web token with the contents of user object and return it in the response
-         const token = jwt.sign(user, 'jwt_secret_token');
+        req.login(user, {session: false}, (err) => {
+            if (err) {
+                res.send(err);
+            }
 
-         return res.json({user, token});
-      });
-  })(req, res);
+            const token = jwt.sign(JSON.stringify(user), 'jwt_secret_token');
+
+            return res.json({user, token});
+        });
+    })
+    (req, res);
 }
 
 module.exports.getProfile = (req, res) => {

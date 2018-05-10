@@ -64,6 +64,9 @@ app.use('/css/'   , express.static(__dirname + '/node_modules/font-awesome/css')
 // Set and Initialize Passport and Authentication
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 require('./app/user/config/passport');
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
