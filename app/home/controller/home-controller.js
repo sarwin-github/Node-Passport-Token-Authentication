@@ -3,8 +3,7 @@
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 module.exports.getHome = (req, res) => {
 	res.render('home/index.ejs', { 
-		success: true, 
-		error: req.flash('error'),
-		message: req.flash('message')
+		success: true,
+		message: 'Successfully fetched home page'
 	});
 };

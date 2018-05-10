@@ -4,14 +4,17 @@ const jwt      = require('jsonwebtoken');
 const passport = require("passport");
 
 module.exports.getLogin = (req, res) => {
-  res.json({message:'Successfully fetched form for login.'});
+  res.render('user/login.ejs', { 
+    success: true, 
+    message:'Successfully fetched form for login.'
+  });
 }
 
 module.exports.postLogin = (req, res, next) => {
-  passport.authenticate('local', {session: false}, (err, user, info) => {
+  passport.authenticate('local', {session: false}, (err, user, info) => {      
       if (err || !user) {
           return res.status(400).json({
-              message: 'Something is not right',
+              message: info ? info.message : 'Login failed',
               user   : user
           });
       }
@@ -21,8 +24,13 @@ module.exports.postLogin = (req, res, next) => {
              res.json(err);
          }
          // generate a signed son web token with the contents of user object and return it in the response
-         const token = jwt.sign(user, 'your_jwt_secret');
+         const token = jwt.sign(user, 'jwt_secret_token');
+
          return res.json({user, token});
       });
   })(req, res);
-};
+}
+
+module.exports.getProfile = (req, res) => {
+  res.json({user: req.user});
+}

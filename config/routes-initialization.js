@@ -4,11 +4,13 @@
 const HomeRoutes = require('../app/home/route/home-routes');
 const UserRoutes = require('../app/user/route/user-routes');
 
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Set and Initialize Routes
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 module.exports.initializeRoutes = app => {
 	/* Home routes */
+	app.use('/', UserRoutes);
 	app.use('/', HomeRoutes);
-	app.use('/login', UserRoutes);
+	
 };
