@@ -6,7 +6,7 @@ module.exports.authorizeAccess = (req, res, next) => {
   passport.authenticate('jwt', {session: false}, (err, user, info) => {
         if (err || !user) {
             return res.status(400).json({
-                message: 'You are not authorized to access this route.'
+                error: 'You are not authorized to access this route.'
             });
         }
 

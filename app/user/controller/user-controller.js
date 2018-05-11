@@ -29,8 +29,8 @@ module.exports.postLogin = (req, res, next) => {
 
             const token = jwt.sign(user.toJSON(), 'jwt_secret_token', { expiresIn: '5h' });
             res.cookie('jwt', token);
-            
-            return res.json({user, token});
+
+            return res.redirect('/profile')
         });
     })
     (req, res);
@@ -55,5 +55,13 @@ module.exports.signUp = (req, res) => {
 
 // get user profile
 module.exports.getProfile = (req, res) => {
-  res.json({user: req.user, message: 'Successfully fetched user profile.'});
+  res.render('user/profile.ejs', { 
+    user: req.user, message: 'Successfully fetched user profile.'
+  });
 }
+
+module.exports.getLogout = (req, res) => {
+  req.logout();
+  res.clearCookie('jwt');
+  res.redirect('/login')
+};

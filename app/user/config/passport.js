@@ -36,7 +36,7 @@ passport.use(new LocalStrategy({
 const opts = {};
 
 let cookieExtractor = (req, res) => {
-  var token = null;
+  let token = null;
   if (req && req.cookies) token = req.cookies['jwt'];
   return token;
 };
