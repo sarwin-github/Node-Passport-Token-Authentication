@@ -15,6 +15,7 @@ const helmet         = require('helmet');
 const passport       = require('passport');
 const dotEnv         = require('dotenv').config();
 const favicon        = require('serve-favicon');
+const csurf          = require('csurf');
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Set database connection
@@ -61,6 +62,16 @@ app.use('/fonts/' , express.static(__dirname + '/node_modules/font-awesome/fonts
 app.use('/css/'   , express.static(__dirname + '/node_modules/font-awesome/css'));
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Anti csurf attack protection
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+app.use(csurf());
+
+app.use(function(req, res, next) {
+  res.locals._csrf = req.csrfToken();
+  next();
+});
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Set and Initialize Passport and Authentication
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Initialize passport
@@ -87,6 +98,7 @@ let errorHandler = require('./config/error-handler');
 
 app.use((req, res, next) => errorHandler.getError(req, res, next));
 app.use((err, req, res, next) => errorHandler.showError(err, req, res, next));
+
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Create Server

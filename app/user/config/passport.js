@@ -40,7 +40,7 @@ let cookieExtractor = (req, res) => {
 const opts = {};
 
 opts.jwtFromRequest = cookieExtractor;
-opts.secretOrKey    = 'jwt_secret_token';
+opts.secretOrKey    =  process.env.jwt_secret;
 
 passport.use(new JWTStrategy(opts, (jwt_payload, callback) => {
     let query = User.findOne({_id: jwt_payload._id}).select({'email': 1, 'name': 1});

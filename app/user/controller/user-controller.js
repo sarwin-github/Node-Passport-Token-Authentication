@@ -27,7 +27,7 @@ module.exports.postLogin = (req, res, next) => {
                 res.send(err);
             }
 
-            const token = jwt.sign(user.toJSON(), 'jwt_secret_token', { expiresIn: '5h' });
+            const token = jwt.sign(user.toJSON(), process.env.jwt_secret, { expiresIn: '5h' });
             res.cookie('jwt', token);
 
             return res.redirect('/profile')

@@ -1,4 +1,6 @@
+const session    = require('express-session');
 const mongoose   = require('mongoose');
+const mongoStore = require('connect-mongo')(session);
 
 // Local connection
 let mongoConnectionLocal = {	
@@ -34,5 +36,15 @@ module.exports.pickEnv = (env, app) => {
 	        	err => { if(err) { console.log(err); }});
 			break;
 	};
+
+	// Set session and cookie max life, store session in mongo database
+	app.use(session({
+		secret : process.env.sessionKey,    
+		httpOnly: true,
+		resave : true,
+	  	saveUninitialized: false, 
+		store  : new mongoStore({ mongooseConnection: mongoose.connection }),
+		cookie : { maxAge: 60 * 60 * 1000}
+	}));
 };
 
