@@ -1,7 +1,5 @@
 const passport = require('passport');
 
-passport.authenticate('jwt', {session: false})
-
 module.exports.authorizeAccess = (req, res, next) => {
   passport.authenticate('jwt', {session: false}, (err, user, info) => {
         if (err || !user) {
