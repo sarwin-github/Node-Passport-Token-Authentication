@@ -5,9 +5,6 @@ const router    = express();
 const userController = require('../controller/user-controller');
 const userMiddleware = require('../middleware/user-middleware');
 
-const csrfProtection = csrf();
-router.use(csrfProtection);
-
 /* login */
 router.route('/login').get(userController.getLogin);
 router.route('/login').post(userController.postLogin);
