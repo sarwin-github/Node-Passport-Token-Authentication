@@ -9,6 +9,7 @@ const JWTStrategy   = passportJWT.Strategy;
 //local
 const LocalStrategy = require('passport-local').Strategy;
 
+//passport local
 passport.use(new LocalStrategy({
         usernameField: 'email',
         passwordField: 'password'
@@ -29,13 +30,16 @@ passport.use(new LocalStrategy({
     }
 ));
 
-var opts = {}
+//passport jwt
+const opts = {};
+
 opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 opts.secretOrKey    = 'jwt_secret_token';
 
 passport.use(new JWTStrategy(opts, (jwt_payload, callback) => {
-    User.findOneById({id: jwt_payload._id}, (err, user) => {
-      console.log(user, err)
+    let query = User.findOne({_id: jwt_payload._id}).select({'email': 1, 'name': 1});
+
+    query.exec((err, user) => {
         if (err) {
             return callback(err, false);
         }

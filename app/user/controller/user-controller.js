@@ -4,6 +4,7 @@ const jwt      = require('jsonwebtoken');
 const passport = require("passport");
 const User  = require("../model/user");
 
+// get login form
 module.exports.getLogin = (req, res) => {
   res.render('user/login.ejs', { 
     success: true, 
@@ -11,21 +12,7 @@ module.exports.getLogin = (req, res) => {
   });
 }
 
-module.exports.signUp = (req, res) => {
-  let user = new User();
-
-  user.email    = req.body.email;
-  user.password = user.generateHash(req.body.password);
-
-  user.save(err => {
-    if(err){
-      return res.json({err:err, message: 'Something went wrong.'});
-    }
-
-    res.json({message:"successfully added new user"});
-  })
-};
-
+// login user
 module.exports.postLogin = (req, res, next) => {
   passport.authenticate('local', {session: false}, (err, user, info) => {
         console.log(err);
@@ -41,7 +28,7 @@ module.exports.postLogin = (req, res, next) => {
                 res.send(err);
             }
 
-            const token = jwt.sign(JSON.stringify(user), 'jwt_secret_token');
+            const token = jwt.sign(user.toJSON(), 'jwt_secret_token', { expiresIn: '5h' });
 
             return res.json({user, token});
         });
@@ -49,6 +36,24 @@ module.exports.postLogin = (req, res, next) => {
     (req, res);
 }
 
+// create new user
+module.exports.signUp = (req, res) => {
+  let user = new User();
+
+  user.email    = req.body.email;
+  user.password = user.generateHash(req.body.password);
+
+  user.save(err => {
+    if(err){
+      return res.json({err:err, message: 'Something went wrong.'});
+    }
+
+    res.json({message:"successfully added new user"});
+  })
+}
+
+
+// get user profile
 module.exports.getProfile = (req, res) => {
-  res.json({user: req.user});
+  res.json({user: req.user, message: 'Successfully fetched user profile.'});
 }
