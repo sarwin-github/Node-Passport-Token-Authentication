@@ -30,10 +30,18 @@ passport.use(new LocalStrategy({
     }
 ));
 
+
+
 //passport jwt
 const opts = {};
 
-opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
+let cookieExtractor = (req, res) => {
+  var token = null;
+  if (req && req.cookies) token = req.cookies['jwt'];
+  return token;
+};
+
+opts.jwtFromRequest = cookieExtractor;
 opts.secretOrKey    = 'jwt_secret_token';
 
 passport.use(new JWTStrategy(opts, (jwt_payload, callback) => {

@@ -15,7 +15,6 @@ module.exports.getLogin = (req, res) => {
 // login user
 module.exports.postLogin = (req, res, next) => {
   passport.authenticate('local', {session: false}, (err, user, info) => {
-        console.log(err);
         if (err || !user) {
             return res.status(400).json({
                 message: info ? info.message : 'Login failed',
@@ -29,7 +28,8 @@ module.exports.postLogin = (req, res, next) => {
             }
 
             const token = jwt.sign(user.toJSON(), 'jwt_secret_token', { expiresIn: '5h' });
-
+            res.cookie('jwt', token);
+            
             return res.json({user, token});
         });
     })
