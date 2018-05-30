@@ -1,4 +1,4 @@
-const User          = require('../model/user');
+const Client        = require('../model/client');
 const passport      = require('passport');
 const passportJWT   = require("passport-jwt");
 
@@ -10,29 +10,29 @@ const JWTStrategy   = passportJWT.Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 
 //passport local
-passport.use(new LocalStrategy({
+passport.use('client-login', new LocalStrategy({
         usernameField: 'email',
         passwordField: 'password'
     }, (email, password, callback) => {
 
-        return User.findOne({ 'email': email.toLowerCase() }, (err, user) => {
+        return Client.findOne({ 'email': email.toLowerCase() }, (err, client) => {
             if (err) {
                 return callback(err);
             }
-            if (!user) {
-                return callback(null, false, { message: 'User does not exist in the database.'});
+            if (!client) {
+                return callback(null, false, { message: 'Client does not exist in the database.'});
             }
-            if (!user.validPassword(password)) {
+            if (!client.validPassword(password)) {
                 return callback(null, false, { message: 'Invalid password.'});
             }
-            return callback(null, user);
+            return callback(null, client);
         });
     }
 ));
 
 let cookieExtractor = (req, res) => {
   var token = null;
-  if (req && req.cookies) token = req.cookies['user-jwt'];
+  if (req && req.cookies) token = req.cookies['client-jwt'];
   return token;
 };
 
@@ -42,15 +42,15 @@ const opts = {};
 opts.jwtFromRequest = cookieExtractor;
 opts.secretOrKey    =  process.env.jwt_secret;
 
-passport.use(new JWTStrategy(opts, (jwt_payload, callback) => {
-    let query = User.findOne({_id: jwt_payload._id}).select({'email': 1, 'name': 1, 'user': 1});
+passport.use('client-jwt', new JWTStrategy(opts, (jwt_payload, callback) => {
+    let query = Client.findOne({_id: jwt_payload._id}).select({'email': 1, 'name': 1, 'client': 1});
 
-    query.exec((err, user) => {
+    query.exec((err, client) => {
         if (err) {
             return callback(err, false);
         }
-        if (user) {
-            return callback(null, user);
+        if (client) {
+            return callback(null, client);
         } else {
             return callback(null, false);
             // or you could create a new account

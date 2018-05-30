@@ -28,12 +28,20 @@ module.exports.postLogin = (req, res, next) => {
             }
 
             const token = jwt.sign(user.toJSON(), process.env.jwt_secret, { expiresIn: '5h' });
-            res.cookie('jwt', token);
+            res.cookie('user-jwt', token);
 
-            return res.redirect('/profile')
+            return res.redirect('/user/profile')
         });
     })
     (req, res);
+}
+
+// create new user
+module.exports.getSignUp = (req, res) => {
+  res.render('user/signup.ejs', { 
+    success: true, 
+    message:'Successfully fetched form for signup.'
+  });
 }
 
 // create new user
@@ -42,6 +50,7 @@ module.exports.signUp = (req, res) => {
 
   user.email    = req.body.email;
   user.password = user.generateHash(req.body.password);
+  user.name     = req.body.name;
 
   user.save(err => {
     if(err){
@@ -62,6 +71,6 @@ module.exports.getProfile = (req, res) => {
 
 module.exports.getLogout = (req, res) => {
   req.logout();
-  res.clearCookie('jwt');
-  res.redirect('/login')
+  res.clearCookie('user-jwt');
+  res.redirect('/user/login')
 };

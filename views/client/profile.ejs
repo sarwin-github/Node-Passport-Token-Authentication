@@ -22,14 +22,14 @@
 			<div class="row">
 				<div class="col-md-8 col-sm-8 offset-2 card pt-4 px-4" >
 					<div class="jumbotron">
-						<legend class="pl-15">User Profile
+						<legend class="pl-15">Client Profile
 							
 						</legend>
 						<dl>
-							<dd>Name: <%= user.name %></dd>
-							<dd>Email: <%= user.email %></dd>
-							<dd>User type: <%= user.user ? 'User': 'Client' %></dd>
-							<dd class="pt-4"><a href="/user/logout" class="btn btn-danger btn-sm px-3">Logout</a></dd>
+							<dd>Name: <%= client.name %></dd>
+							<dd>Email: <%= client.email %></dd>
+							<dd>User type: <%= client.client ? 'Client': 'User' %></dd>
+							<dd class="pt-4"><a href="/client/logout" class="btn btn-danger btn-sm px-3">Logout</a></dd>
 						</dl>
 					</div>
 				</div>

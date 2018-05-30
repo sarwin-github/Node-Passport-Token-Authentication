@@ -9,7 +9,9 @@ const userMiddleware = require('../middleware/user-middleware');
 router.route('/login').get(userController.getLogin);
 router.route('/login').post(userController.postLogin);
 
+router.route('/signup').get(userController.getSignUp);
 router.route('/signup').post(userController.signUp);
+
 router.route('/profile').get(userMiddleware.authorizeAccess, userController.getProfile);
 
 router.route('/logout').get(userController.getLogout);

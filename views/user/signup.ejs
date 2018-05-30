@@ -21,10 +21,8 @@
 		<div class="container py-4 pb-4">
 			<div class="row">
 				<div class="col-md-8 col-sm-8 offset-2 card py-40 px-40" >
-				    <form class="form-horizontal pt-4" action='/user/login' method='post'>
-				    	<legend class="pl-3"><span class="fa fa-lock"></span> User Login Form
-				    		<a href="/" class="float-right" style="font-size: 14px;">Home</a>
-				    	</legend>
+				    <form class="form-horizontal pt-4" action='/user/signup' method='post'>
+				    	<legend class="pl-3"><span class="fa fa-lock"></span> User Signup Form</legend>
 				        <fieldset>
 				            <div class="form-group">
 				              <label for="email" class="col-md-6 control-label">Email:</label>
@@ -39,7 +37,15 @@
 				                <input type="password" class="form-control" id="password" name='password' placeholder="Password" required>
 				              </div>
 				            </div>
+
+				            <div class="form-group">
+				              <label for="name" class="col-md-6 control-label">Name:</label>
+				              <div class="col-md-12">
+				                <input type="text" class="form-control" id="name" name='name' placeholder="Full Name" required>
+				              </div>
+				            </div>
 				            <br>
+				            
 				            <input type="hidden" name="_csrf" value="<%= locals._csrf %>" required>
 				            <div class="form-group">
 				              <div class="col-md-12 text-center hidden-sm-down">
@@ -50,10 +56,6 @@
 				            </div>
 				        </fieldset>
 				    </form>
-				    <br>
-				    <div class="text-center mb-5">
-				    	<a href="/user/signup">Click here to register.</a>
-				    </div>
 				</div>
 				
 			</div>
